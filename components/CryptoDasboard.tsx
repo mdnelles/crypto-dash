@@ -77,10 +77,10 @@ export default function CryptoDashboard() {
 
         for (let i = 0; i < prices.length; i++) {
             const timestamp = now.getTime() - (prices.length - i) * 3600000 // hourly data
-            const price = prices[i]
+            const price = prices[i] ?? 1;
             const volatility = price * 0.02 // 2% volatility
 
-            const open = i > 0 ? prices[i - 1] : price
+            const open: number = i > 0 ? (prices[i - 1] ?? price) : price
             const high = price + Math.random() * volatility
             const low = price - Math.random() * volatility
             const close = price
@@ -182,7 +182,7 @@ export default function CryptoDashboard() {
             const price = currentPrice * (1 + variation * (i / points))
             const volatility = price * 0.02
 
-            const open = i > 0 ? data[i - 1].close || price : price
+            const open = i > 0 ? data[i - 1]?.close ?? price : price
             const high = price + Math.random() * volatility
             const low = price - Math.random() * volatility
             const close = price
@@ -227,7 +227,7 @@ export default function CryptoDashboard() {
             <div className="max-w-7xl mx-auto">
                 <div className="flex items-center justify-between mb-8">
                     <div>
-                        <h1 className="text-4xl font-bold tracking-tight">Crypto Dashboard</h1>
+                        <h1 className="text-4xl font-bold tracking-tight">Live Crypto</h1>
                         <p className="text-muted-foreground mt-2">Real-time cryptocurrency prices and market data</p>
                     </div>
                     <div className="text-right">

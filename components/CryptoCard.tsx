@@ -26,7 +26,7 @@ export default function CryptoCard({ cryptoData, selectedCrypto, handleCryptoSel
                         }`}
                     onClick={() => handleCryptoSelect(crypto.id)}
                 >
-                    <CardHeader className="pb-3">
+                    <CardHeader className="px-4 pt-4 pb-3">
                         <div className="flex items-center justify-between">
                             <div className="flex items-center space-x-3">
                                 <img
