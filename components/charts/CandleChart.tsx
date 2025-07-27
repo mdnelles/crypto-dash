@@ -1,70 +1,100 @@
-import React, { useEffect } from "react";
+// components/CandlestickChart.tsx
+import React, { useEffect, useRef } from "react";
 import {
-   Bar,
-   BarChart,
-   CartesianGrid,
-   ResponsiveContainer,
-   XAxis,
-   YAxis,
-} from "recharts";
-
-import { formatPrice } from "@/lib/format";
-import { ChartData } from "../Chart";
-import { ChartTooltip } from "../ui/chart";
+   createChart,
+   ColorType,
+   UTCTimestamp,
+   CandlestickData,
+} from "lightweight-charts";
+import { ChartData } from "../Chart"; // Same ChartData interface you're already using
 
 export default function CandlestickChart({ data }: { data: ChartData[] }) {
-   const processedData = data.map((item) => ({
-      ...item,
-      range: [item.low || 0, item.high || 0],
-      openClose: [item.open || 0, item.close || 0],
-   }));
+   const chartRef = useRef<HTMLDivElement>(null);
+   const chartInstance = useRef<ReturnType<typeof createChart> | null>(null);
 
    useEffect(() => {
-      console.log("Processed Data for Candlestick Chart:", processedData);
+      if (!chartRef.current) return;
 
-      return () => {};
-   }, []);
+      // Cleanup previous chart
+      if (chartInstance.current) {
+         chartInstance.current.remove();
+      }
 
-   return (
-      <ResponsiveContainer width='100%' height={400}>
-         <BarChart
-            data={processedData}
-            margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
-         >
-            <CartesianGrid strokeDasharray='3 3' />
-            <XAxis
-               dataKey='time'
-               tick={{ fontSize: 12 }}
-               interval={Math.floor(data.length / 8)}
-            />
-            <YAxis
-               tick={{ fontSize: 12 }}
-               domain={["dataMin - 100", "dataMax + 100"]}
-               tickFormatter={(value) => `$${value.toFixed(0)}`}
-            />
-            <ChartTooltip
-               content={({ active, payload, label }) => {
-                  if (active && payload && payload.length) {
-                     const data = payload[0].payload as ChartData;
-                     return (
-                        <div className='bg-background border rounded-lg p-3 shadow-lg'>
-                           <p className='font-medium'>
-                              {data.date} {label}
-                           </p>
-                           <div className='space-y-1 text-sm'>
-                              <p>Open: {formatPrice(data.open || 0)}</p>
-                              <p>High: {formatPrice(data.high || 0)}</p>
-                              <p>Low: {formatPrice(data.low || 0)}</p>
-                              <p>Close: {formatPrice(data.close || 0)}</p>
-                           </div>
-                        </div>
-                     );
-                  }
-                  return null;
-               }}
-            />
-            <Bar dataKey='high' fill='hsl(var(--chart-1))' opacity={0.6} />
-         </BarChart>
-      </ResponsiveContainer>
-   );
+      // Create new chart
+      const chart = createChart(chartRef.current, {
+         width: chartRef.current.clientWidth,
+         height: 400,
+         layout: {
+            background: { type: ColorType.Solid, color: "#ffffff" },
+            textColor: "#333",
+         },
+         grid: {
+            vertLines: { color: "#eee" },
+            horzLines: { color: "#eee" },
+         },
+         timeScale: {
+            timeVisible: true,
+            secondsVisible: false,
+         },
+         crosshair: {
+            mode: 1,
+         },
+         rightPriceScale: {
+            borderVisible: false,
+         },
+      });
+
+      const candlestickSeries = chart.addCandlestickSeries({
+         upColor: "#16a34a",
+         borderUpColor: "#16a34a",
+         wickUpColor: "#16a34a",
+         downColor: "#dc2626",
+         borderDownColor: "#dc2626",
+         wickDownColor: "#dc2626",
+      });
+
+      // Transform data
+      const formattedData: CandlestickData[] = data
+         .filter(
+            (d) =>
+               d &&
+               typeof d.timestamp === "number" &&
+               d.open !== null &&
+               d.open !== undefined &&
+               d.high !== null &&
+               d.high !== undefined &&
+               d.low !== null &&
+               d.low !== undefined &&
+               d.close !== null &&
+               d.close !== undefined
+         )
+         .map((d) => ({
+            time: Math.floor(d.timestamp / 1000) as UTCTimestamp, // ⬅️ cast time correctly
+            open: Number(d.open),
+            high: Number(d.high),
+            low: Number(d.low),
+            close: Number(d.close),
+         }));
+
+      candlestickSeries.setData(formattedData);
+
+      chartInstance.current = chart;
+
+      // Resize chart on window resize
+      const handleResize = () => {
+         if (chartRef.current) {
+            chart.applyOptions({
+               width: chartRef.current.clientWidth,
+            });
+         }
+      };
+      window.addEventListener("resize", handleResize);
+
+      return () => {
+         window.removeEventListener("resize", handleResize);
+         chart.remove();
+      };
+   }, [data]);
+
+   return <div ref={chartRef} style={{ width: "100%", height: "400px" }} />;
 }

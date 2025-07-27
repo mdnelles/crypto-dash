@@ -2,12 +2,11 @@
 import { BarChart3, TrendingUpIcon } from "lucide-react";
 import { Button } from "./ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
-import ChartError from "./ChartError";
-import ChartLoading from "./ChartLoading";
+import ChartError from "./chart-error";
+import ChartLoading from "./chart-loading";
 import { ChartContainer, ChartTooltip } from "./ui/chart";
 
 import { formatPercentage, formatPrice } from "@/lib/format";
-import { useEffect } from "react";
 import LinerChart from "./charts/LineChart";
 import CandlestickChart from "./charts/CandleChart";
 
@@ -37,10 +36,10 @@ interface Crypto {
 }
 
 interface Chart {
-   cryptoData: Crypto[];
-   selectedCrypto: string;
    chartType: ChartType;
    setChartType: (type: ChartType) => void;
+   cryptoData: Crypto[];
+   selectedCrypto: string;
    chartError: string | null;
    chartLoading: boolean;
    chartData: ChartData[];
@@ -93,19 +92,22 @@ export default function Chart({
                </div>
                <div className='flex space-x-2'>
                   <Button
-                     variant={chartType === "line" ? "default" : "outline"}
+                     variant={chartType === "line" ? "secondary" : "outline"}
                      size='sm'
                      onClick={() => setChartType("line")}
+                     className='cursor-pointer border'
                   >
                      <TrendingUpIcon className='w-4 h-4 mr-2' />
                      Line
                   </Button>
+                  <div style={{ width: 10 }} />
                   <Button
                      variant={
-                        chartType === "candlestick" ? "default" : "outline"
+                        chartType === "candlestick" ? "secondary" : "outline"
                      }
                      size='sm'
                      onClick={() => setChartType("candlestick")}
+                     className='cursor-pointer border'
                   >
                      <BarChart3 className='w-4 h-4 mr-2' />
                      Candlestick
@@ -129,13 +131,13 @@ export default function Chart({
                >
                   {chartType === "line" ? (
                      <div>
-                        LLLLLLLLine
-                        {/* <LinerChart data={chartData} /> */}
+                        Line Chart
+                        <LinerChart data={chartData} />
                      </div>
                   ) : (
                      <div>
-                        CCCCCCCCandle<br></br>
-                        {/* <CandlestickChart data={chartData} /> */}
+                        Candlestick Chart
+                        <CandlestickChart data={chartData} />
                      </div>
                   )}
                </ChartContainer>

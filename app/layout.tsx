@@ -13,7 +13,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-   title: "Live Crypto (Demontration Purposes Only)",
+   title: "Live Crypto (Demonstration Purposes Only)",
    description: "Live Crypto Dashboard",
 };
 

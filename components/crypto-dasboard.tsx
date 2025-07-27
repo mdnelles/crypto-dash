@@ -4,10 +4,10 @@
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { RefreshCw, Moon, Sun } from "lucide-react";
-import CryptoCard from "./CryptoCard";
+import CryptoCard from "./crypto-card";
 import Loading from "./Loading";
 import Chart from "./Chart";
-import ErrorLoadingData from "./ErrorLoadingData";
+import ErrorLoadingData from "./error-loading-data";
 
 interface CryptoData {
    id: string;
@@ -48,7 +48,7 @@ export default function CryptoDashboard() {
    const [selectedCrypto, setSelectedCrypto] = useState<string>("bitcoin");
    const [chartData, setChartData] = useState<ChartData[]>([]);
    const [chartLoading, setChartLoading] = useState(true);
-   const [chartType, setChartType] = useState<ChartType>("line");
+   const [chartType, setChartType] = useState<ChartType>("candlestick");
    const [chartError, setChartError] = useState<string | null>(null);
 
    const fetchCryptoData = async () => {
@@ -300,15 +300,16 @@ export default function CryptoDashboard() {
             <div className='flex items-center justify-between mb-8'>
                <div>
                   <h1 className='text-4xl font-bold tracking-tight'>
-                     Live Crypto (Demontration Purposes Only)
+                     Live Crypto (Demonstration Purposes Only)
                   </h1>
-                  <p className='text-muted-foreground mt-2'>
-                     Real-time cryptocurrency prices and market data
-                  </p>
                </div>
                <div className='text-right'>
                   <div className='flex justify-end gap-3 mb-2'>
-                     <Button variant='outline' onClick={toggleDark}>
+                     <Button
+                        variant='outline'
+                        onClick={toggleDark}
+                        className='cursor-pointer'
+                     >
                         {!darkMode ? (
                            <Moon className='w-4 h-4 mr-2' />
                         ) : (
@@ -320,9 +321,10 @@ export default function CryptoDashboard() {
                         variant='outline'
                         onClick={fetchCryptoData}
                         disabled={loading}
+                        className='cursor-pointer'
                      >
                         <RefreshCw
-                           className={`w-4 h-4 mr-2 ${loading ? "animate-spin" : ""}`}
+                           className={`w-4 h-4 mr-2 ${loading ? "animate-spin" : ""} `}
                         />
                         Refresh
                      </Button>
@@ -338,7 +340,7 @@ export default function CryptoDashboard() {
             {/* Chart Section */}
 
             <Chart
-               chartType={"line"}
+               chartType={chartType}
                setChartType={setChartType}
                chartError={chartError}
                chartLoading={chartLoading}
