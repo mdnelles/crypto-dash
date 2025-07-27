@@ -87,3 +87,55 @@ body {
    background-color: var(--background);
    color: var(--foreground);
 }
+
+/* Reset default margins and padding */
+html,
+body {
+   margin: 0;
+   padding: 0;
+   height: 100%;
+}
+
+/* Ensure proper box-sizing */
+*,
+*::before,
+*::after {
+   box-sizing: border-box;
+}
+
+/* Remove default margins from common elements */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+ul,
+ol,
+li,
+figure,
+figcaption,
+blockquote,
+dl,
+dd {
+   margin: 0;
+}
+
+/* Ensure root element takes full height */
+#__next,
+[data-nextjs-scroll-focus-boundary] {
+   height: 100%;
+}
+
+/* Smooth scrolling */
+html {
+   scroll-behavior: smooth;
+}
+
+/* Improve text rendering */
+body {
+   -webkit-font-smoothing: antialiased;
+   -moz-osx-font-smoothing: grayscale;
+   text-rendering: optimizeLegibility;
+}

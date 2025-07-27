@@ -230,7 +230,7 @@ function ChartTooltipContent({
                            item.payload
                         )
                      ) : (
-                        <>
+                        <div>
                            {itemConfig?.icon ? (
                               <itemConfig.icon />
                            ) : (
@@ -275,7 +275,7 @@ function ChartTooltipContent({
                                  </span>
                               )}
                            </div>
-                        </>
+                        </div>
                      )}
                   </div>
                );
